@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurarich Daily Brief</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #faf7f2;
+    color: #1a1a1a;
+    line-height: 1.6;
+  }
+  .top-bar {
+    background: linear-gradient(135deg, #c78a5c, #a86445);
+    color: white;
+    padding: 6px 0;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .container { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+  header {
+    text-align: center;
+    padding: 36px 0 20px;
+    border-bottom: 1px solid #e0d6c8;
+  }
+  header h1 {
+    font-size: 22px;
+    color: #a86445;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  header h1 span { color: #c78a5c; }
+  header .date {
+    font-size: 13px;
+    color: #8a7a6a;
+    margin-top: 4px;
+  }
+  .news-item {
+    padding: 18px 0;
+    border-bottom: 1px solid #ede6db;
+  }
+  .news-item:last-of-type { border-bottom: none; }
+  .news-item .source {
+    font-size: 10px;
+    color: #c78a5c;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .news-item .title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin: 2px 0 4px;
+    line-height: 1.4;
+  }
+  .news-item .title a {
+    color: #1a1a1a;
+    text-decoration: none;
+  }
+  .news-item .title a:hover { color: #a86445; }
+  .news-item .summary {
+    font-size: 13px;
+    color: #5a4a3a;
+    line-height: 1.5;
+  }
+  .section-title {
+    font-size: 13px;
+    color: #a86445;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    margin: 24px 0 4px;
+    padding-top: 8px;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #8a7a6a;
+  }
+  .empty-state h2 { font-size: 20px; color: #a86445; margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; }
+  footer {
+    text-align: center;
+    padding: 24px 0 36px;
+    color: #b0a090;
+    font-size: 11px;
+    border-top: 1px solid #e0d6c8;
+    margin-top: 8px;
+  }
+  footer a { color: #c78a5c; text-decoration: none; }
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #8a7a6a;
+  }
+  .loading .spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid #ede6db;
+    border-top-color: #c78a5c;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="top-bar">Aurarich Powder · SPF 50++ Daily Brief</div>
+<div class="container">
+  <header>
+    <h1>Aurarich <span>Daily</span></h1>
+    <div class="date" id="date"></div>
+  </header>
+  <div id="content">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading today's brief...</p>
+    </div>
+  </div>
+  <footer>
+    Updated daily at 8:00 AM · <a href="https://facebook.com/aurarich" target="_blank">Aurarich Powder</a>
+  </footer>
+</div>
+<script>
+const today = new Date();
+const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+document.getElementById('date').textContent = `${days[today.getDay()]}, ${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
+
+const articles = ARTICLES_PLACEHOLDER;
+
+function render() {
+  if (!articles || articles.length === 0) {
+    document.getElementById('content').innerHTML = `
+      <div class="empty-state">
+        <h2>No news yet today</h2>
+        <p>Today's brief will appear here after 8:00 AM.</p>
+      </div>`;
+    return;
+  }
+  const cats = [...new Set(articles.map(a => a.cat))];
+  let html = '';
+  cats.forEach(cat => {
+    html += `<div class="section-title">${cat}</div>`;
+    articles.filter(a => a.cat === cat).forEach(a => {
+      html += `<div class="news-item">
+        <div class="source">${a.src}</div>
+        <div class="title"><a href="${a.url}" target="_blank">${a.title}</a></div>
+        <div class="summary">${a.summary}</div>
+      </div>`;
+    });
+  });
+  document.getElementById('content').innerHTML = html;
+}
+render();
+</script>
+</body>
+</html>
